@@ -3,6 +3,7 @@ package io.github.dayal96.api;
 import io.github.dayal96.model.RequestType;
 import io.github.dayal96.model.RouteEntry;
 import io.github.dayal96.service.RouteService;
+import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,36 +23,36 @@ public class PrototypeApi {
   private RouteService routeService;
 
   @GetMapping("/**")
-  public String routeGetRequests(HttpServletRequest request) {
+  public Map<String, String> routeGetRequests(HttpServletRequest request) {
     Optional<RouteEntry> route = routeService.getMatchingRoute(request.getRequestURI(),
         RequestType.GET);
 
     if (route.isPresent()) {
-      return route.get().getTemplate();
+      return route.get().extractParameters(request.getRequestURI());
     } else {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
     }
   }
 
   @PostMapping("/**")
-  public String routePostRequests(HttpServletRequest request) {
+  public Map<String, String> routePostRequests(HttpServletRequest request) {
     Optional<RouteEntry> route = routeService.getMatchingRoute(request.getRequestURI(),
         RequestType.GET);
 
     if (route.isPresent()) {
-      return route.get().getTemplate();
+      return route.get().extractParameters(request.getRequestURI());
     } else {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
     }
   }
 
   @PutMapping("/**")
-  public String routePutRequests(HttpServletRequest request) {
+  public Map<String, String> routePutRequests(HttpServletRequest request) {
     Optional<RouteEntry> route = routeService.getMatchingRoute(request.getRequestURI(),
         RequestType.GET);
 
     if (route.isPresent()) {
-      return route.get().getTemplate();
+      return route.get().extractParameters(request.getRequestURI());
     } else {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
     }
