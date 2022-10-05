@@ -24,37 +24,16 @@ public class PrototypeApi {
 
   @GetMapping("/**")
   public Map<String, String> routeGetRequests(HttpServletRequest request) {
-    Optional<RouteEntry> route = routeService.getMatchingRoute(request.getRequestURI(),
-        RequestType.GET);
-
-    if (route.isPresent()) {
-      return route.get().extractParameters(request.getRequestURI());
-    } else {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
-    }
+    return routeService.routeRequests(request.getRequestURI(), RequestType.GET);
   }
 
   @PostMapping("/**")
   public Map<String, String> routePostRequests(HttpServletRequest request) {
-    Optional<RouteEntry> route = routeService.getMatchingRoute(request.getRequestURI(),
-        RequestType.GET);
-
-    if (route.isPresent()) {
-      return route.get().extractParameters(request.getRequestURI());
-    } else {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
-    }
+    return routeService.routeRequests(request.getRequestURI(), RequestType.POST);
   }
 
   @PutMapping("/**")
   public Map<String, String> routePutRequests(HttpServletRequest request) {
-    Optional<RouteEntry> route = routeService.getMatchingRoute(request.getRequestURI(),
-        RequestType.GET);
-
-    if (route.isPresent()) {
-      return route.get().extractParameters(request.getRequestURI());
-    } else {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
-    }
+    return routeService.routeRequests(request.getRequestURI(), RequestType.PUT);
   }
 }
