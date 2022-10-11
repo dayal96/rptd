@@ -13,12 +13,13 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework:spring-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.data:spring-data-jpa")
-    runtimeOnly("com.h2database:h2")
+    implementation(files("library/bnl-lang.jar"))
+    implementation("org.springframework.boot:spring-boot-starter:2.7.4")
+    implementation("org.springframework.boot:spring-boot-starter-web:2.7.4")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.7.4")
+
+    runtimeOnly("org.antlr:antlr4:4.10.1")
+    runtimeOnly("com.h2database:h2:2.1.214")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
