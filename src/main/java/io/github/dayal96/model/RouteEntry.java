@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
@@ -15,8 +16,9 @@ import javax.persistence.Table;
 public class RouteEntry {
 
   @Id private String id;
-  private String template;
-  private RequestType type;
+  @Column private String template;
+  @Column private String script;
+  @Column private RequestType type;
 
   public String getId() {
     return id;
@@ -32,6 +34,14 @@ public class RouteEntry {
 
   public void setTemplate(String template) {
     this.template = template;
+  }
+
+  public String getScript() {
+    return script;
+  }
+
+  public void setScript(String script) {
+    this.script = script;
   }
 
   public RequestType getType() {

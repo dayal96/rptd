@@ -19,17 +19,17 @@ public class PrototypeApi {
   private RouteService routeService;
 
   @GetMapping("/**")
-  public Map<String, String> routeGetRequests(HttpServletRequest request) {
+  public String routeGetRequests(HttpServletRequest request) {
     return routeService.routeRequests(request.getRequestURI(), RequestType.GET);
   }
 
   @PostMapping("/**")
-  public Map<String, String> routePostRequests(HttpServletRequest request) {
+  public String routePostRequests(HttpServletRequest request) {
     return routeService.routeRequests(request.getRequestURI(), RequestType.POST);
   }
 
   @PutMapping("/**")
-  public Map<String, String> routePutRequests(HttpServletRequest request) {
+  public String routePutRequests(HttpServletRequest request) {
     return routeService.routeRequests(request.getRequestURI(), RequestType.PUT);
   }
 }

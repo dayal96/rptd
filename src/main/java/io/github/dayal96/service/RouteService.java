@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class RouteService {
-
   @Autowired
   private RouteRepository routeRepository;
 
@@ -21,9 +20,12 @@ public class RouteService {
     return routeRepository.findById(id);
   }
 
-  public RouteEntry addNewTestRoute(String template, RequestType type) {
+  public RouteEntry addNewRoute(String template, RequestType type) {
     RouteEntry newRoute = new RouteEntry();
-    newRoute.setTemplate(template);
+    List<String> parts = List.of(template.trim().split("\n"));
+
+    newRoute.setTemplate(parts.get(0));
+    newRoute.setScript(String.join("\n", parts.subList(1, parts.size())));
     newRoute.setType(type);
     return routeRepository.save(newRoute);
   }
@@ -32,11 +34,12 @@ public class RouteService {
     routeRepository.deleteById(routeId);
   }
 
-  public Map<String, String> routeRequests(String uri, RequestType type) {
+  public String routeRequests(String uri, RequestType type) {
     Optional<RouteEntry> route = getMatchingRoute(uri, type);
 
     if (route.isPresent()) {
-      return route.get().extractParameters(uri);
+      Map<String, String> urlParameters = route.get().extractParameters(uri);
+      return BnlUtil.processBnl(urlParameters, route.get().getScript());
     } else {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
     }

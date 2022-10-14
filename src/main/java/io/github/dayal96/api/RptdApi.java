@@ -27,17 +27,17 @@ public class RptdApi {
 
   @PostMapping("/route/get")
   public RouteEntry addGetRouteEntry(@RequestBody final String template) {
-    return routeService.addNewTestRoute(template, RequestType.GET);
+    return routeService.addNewRoute(template, RequestType.GET);
   }
 
   @PostMapping("/route/post")
   public RouteEntry addPostRouteEntry(@RequestBody final String template) {
-    return routeService.addNewTestRoute(template, RequestType.POST);
+    return routeService.addNewRoute(template, RequestType.POST);
   }
 
   @PostMapping("/route/put")
   public RouteEntry addPutRouteEntry(@RequestBody final String template) {
-    return routeService.addNewTestRoute(template, RequestType.PUT);
+    return routeService.addNewRoute(template, RequestType.PUT);
   }
 
   @DeleteMapping("/route")
