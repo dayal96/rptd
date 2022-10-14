@@ -3,7 +3,6 @@ package io.github.dayal96.service;
 import io.github.dayal96.interpreter.Interpreter;
 import io.github.dayal96.primitive.string.MyString;
 import io.github.dayal96.runtime.ExprSerialize;
-import io.github.dayal96.runtime.ObjectSerialize;
 import io.github.dayal96.runtime.RptdEvaluator;
 import io.github.dayal96.util.MapperUtil;
 import java.io.StringReader;
@@ -34,24 +33,6 @@ public class BnlUtil {
     try {
       Object result = interpreter.interpret(new StringReader(code.trim()))
           .orElse(new MyString("")).accept(ExprSerialize.getInstance());
-      return MapperUtil.getInstance().writeValueAsString(result);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public static String testBnlObject() {
-    String code = """
-        (cons (cons "type" "object")
-              (cons (cons "field" "value")
-                    (cons (cons "intfield" 1)
-                          false)))
-        """;
-    var interpreter = new Interpreter<>(new RptdEvaluator());
-
-    try {
-      Object result = interpreter.interpret(new StringReader(code.trim()))
-          .orElse(new MyString("")).accept(ObjectSerialize.getInstance());
       return MapperUtil.getInstance().writeValueAsString(result);
     } catch (Exception e) {
       throw new RuntimeException(e);
