@@ -39,7 +39,7 @@ public class RouteService {
 
     if (route.isPresent()) {
       Map<String, String> urlParameters = route.get().extractParameters(uri);
-      return BnlUtil.processBnl(urlParameters, route.get().getScript());
+      return BnlUtil.processBnl(urlParameters, route.get().getScript(), uri);
     } else {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
     }
