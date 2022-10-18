@@ -2,6 +2,7 @@ package io.github.dayal96.runtime;
 
 import io.github.dayal96.expression.Expression;
 import io.github.dayal96.interpreter.Interpreter;
+import io.github.dayal96.runtime.expr.ExprSerialize;
 import io.github.dayal96.util.MapperUtil;
 import java.io.StringReader;
 import java.util.Map;
@@ -18,8 +19,8 @@ public class ExprSerializeTest {
     String code = """
         (define obj
         	(cons (cons "type" "object")
-        		    (cons (cons "test2" "test2")
-        				      #f)))
+        		    (cons (cons "test2" "test2") #f)))
+
         (cons (cons "type" "object")
               (cons (cons "test1" "test1")
         	          (cons (cons "obj" obj) #f)))
