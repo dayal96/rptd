@@ -11,9 +11,9 @@ import io.github.dayal96.expression.operator.AOperator;
 import io.github.dayal96.expression.visitor.ExpressionVisitor;
 import io.github.dayal96.primitive.Primitive;
 
-public abstract class PartialSerializer<T> implements ExpressionVisitor<T> {
+public abstract class PartialVisitor<T> implements ExpressionVisitor<T> {
 
-  public PartialSerializer() {}
+  public PartialVisitor() {}
 
   @Override
   public T visitConsPair(ConsPair consPair) {

@@ -5,7 +5,7 @@ import io.github.dayal96.primitive.Primitive;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ListSerialize extends PartialSerializer<List<Object>> {
+public class ListSerialize extends PartialVisitor<List<Object>> {
 
   private static final ListSerialize instance = new ListSerialize();
 

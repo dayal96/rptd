@@ -34,6 +34,6 @@ public class PrimitiveSerialize implements PrimitiveVisitor<Object> {
 
   @Override
   public Object visitMyString(MyString myString) {
-    return myString.toString();
+    return myString.value;
   }
 }

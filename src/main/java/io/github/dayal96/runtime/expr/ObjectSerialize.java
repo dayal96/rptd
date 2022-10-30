@@ -4,10 +4,11 @@ import static io.github.dayal96.expression.cons.ConsPair.CONS_PAIR_TYPE;
 
 import io.github.dayal96.expression.cons.ConsPair;
 import io.github.dayal96.primitive.Primitive;
+import io.github.dayal96.primitive.string.MyString;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ObjectSerialize extends PartialSerializer<Map<String, Object>> {
+public class ObjectSerialize extends PartialVisitor<Map<String, Object>> {
 
   private static final ObjectSerialize instance = new ObjectSerialize();
 
@@ -22,7 +23,8 @@ public class ObjectSerialize extends PartialSerializer<Map<String, Object>> {
     Map<String, Object> result = expr.rest.accept(this);
     if (expr.first.getType().equals(CONS_PAIR_TYPE)) {
       ConsPair pair = (ConsPair) expr.first;
-      result.put(pair.first.toString(), pair.rest.accept(ExprSerialize.getInstance()));
+      MyString key = (MyString) pair.first;
+      result.put(key.value, pair.rest.accept(ExprSerialize.getInstance()));
     }
     return result;
   }

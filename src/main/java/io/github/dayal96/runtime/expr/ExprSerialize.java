@@ -5,7 +5,7 @@ import io.github.dayal96.primitive.Primitive;
 import java.util.Collections;
 import java.util.List;
 
-public class ExprSerialize extends PartialSerializer<Object> {
+public class ExprSerialize extends PartialVisitor<Object> {
 
   private static final ExprSerialize instance = new ExprSerialize();
 

@@ -3,16 +3,21 @@ package io.github.dayal96.api;
 import io.github.dayal96.model.RequestType;
 import io.github.dayal96.service.RouteService;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+import jdk.jfr.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping(value = "/",
+    consumes = "application/json",
+    produces="application/json")
 public class PrototypeApi {
 
   @Autowired
@@ -20,16 +25,20 @@ public class PrototypeApi {
 
   @GetMapping("/**")
   public String routeGetRequests(HttpServletRequest request) {
-    return routeService.routeRequests(request.getRequestURI(), RequestType.GET);
+    return routeService.routeRequests(request.getRequestURI(), RequestType.GET, Optional.empty());
   }
 
   @PostMapping("/**")
-  public String routePostRequests(HttpServletRequest request) {
-    return routeService.routeRequests(request.getRequestURI(), RequestType.POST);
+  public String routePostRequests(HttpServletRequest request, @RequestBody final String body) {
+    Optional<String> requestBody = body.strip().length() > 0 ? Optional.of(body.strip()) :
+        Optional.empty();
+    return routeService.routeRequests(request.getRequestURI(), RequestType.POST, requestBody);
   }
 
   @PutMapping("/**")
-  public String routePutRequests(HttpServletRequest request) {
-    return routeService.routeRequests(request.getRequestURI(), RequestType.PUT);
+  public String routePutRequests(HttpServletRequest request, @RequestBody final String body) {
+    Optional<String> requestBody = body.strip().length() > 0 ? Optional.of(body.strip()) :
+        Optional.empty();
+    return routeService.routeRequests(request.getRequestURI(), RequestType.PUT, requestBody);
   }
 }

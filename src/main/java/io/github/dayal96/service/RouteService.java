@@ -34,12 +34,12 @@ public class RouteService {
     routeRepository.deleteById(routeId);
   }
 
-  public String routeRequests(String uri, RequestType type) {
+  public String routeRequests(String uri, RequestType type, Optional<String> requestBody) {
     Optional<RouteEntry> route = getMatchingRoute(uri, type);
 
     if (route.isPresent()) {
       Map<String, String> urlParameters = route.get().extractParameters(uri);
-      return BnlUtil.processBnl(urlParameters, route.get().getScript(), uri);
+      return BnlUtil.processBnl(urlParameters, route.get().getScript(), uri, requestBody);
     } else {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found");
     }
