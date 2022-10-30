@@ -3,8 +3,9 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 plugins {
     id("org.springframework.boot") version "2.7.4"
     id("io.spring.dependency-management") version "1.0.14.RELEASE"
-    id("java")
+    java
     antlr
+    idea
 }
 apply(plugin = "io.spring.dependency-management")
 
@@ -16,26 +17,43 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        java {
+            setSrcDirs(listOf("src/main/java", "build/generated-src/main/antlr"))
+        }
+    }
+
+    test {
+        java {
+            setSrcDirs(listOf("src/test/java", "build/generated-src/main/antlr"))
+        }
+    }
+}
+
+idea.module {
+    sourceDirs = sourceDirs + file("build/generated-src/main/antlr")
+}
+
 dependencies {
     implementation(files("library/bnl-lang.jar"))
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    antlr("org.antlr:antlr4:4.11.1")
 
-    runtimeOnly("org.antlr:antlr4:4.10.1")
     runtimeOnly("com.h2database:h2:2.1.214")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
 }
 
 tasks.generateGrammarSource {
     outputDirectory = File("${project
-        .buildDir}/generated-src/antlr/main/io/github/dayal96/antlr")
+        .buildDir}/generated-src/main/antlr/io/github/dayal96/antlr")
     maxHeapSize = "128m"
-    arguments = arguments + listOf("-package", "io.github.dayal96.antlr", "-visitor",
-        "-no-listener")
+    arguments.addAll(listOf("-package", "io.github.dayal96.antlr", "-visitor", "-no-listener"))
 }
 
 tasks.named<BootJar>("bootJar") {

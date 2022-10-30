@@ -29,6 +29,13 @@ public class PrimitiveSerialize implements PrimitiveVisitor<Object> {
       // do nothing
     }
 
+    if (number.contains("/")) {
+      int numEnd = number.indexOf('/');
+      Double numerator = Double.parseDouble(number.substring(0, numEnd));
+      Double denominator = Double.parseDouble(number.substring(numEnd + 1));
+      return numerator / denominator;
+    }
+
     return Double.parseDouble(number);
   }
 
