@@ -6,6 +6,7 @@ import io.github.dayal96.expression.Expression;
 import io.github.dayal96.expression.operator.AOperator;
 import io.github.dayal96.interpreter.Evaluable;
 import io.github.dayal96.interpreter.evaluator.Evaluator;
+import io.github.dayal96.runtime.lib.MakeObject;
 import io.github.dayal96.runtime.lib.RandomFunction;
 import java.util.List;
 import java.util.Optional;
@@ -24,15 +25,17 @@ public class RptdEvaluator implements Evaluator<Optional<Expression>> {
   }
 
   public RptdEvaluator() {
+    this(new RandomFunction());
+  }
+
+  private RptdEvaluator(AOperator randomFunc) {
     this(SymbolTable.getPrimitiveOperations());
-    AOperator randomFunc = new RandomFunction();
-    this.environment.addEntry(randomFunc.toString(), randomFunc);
+    List.of(randomFunc, new MakeObject())
+        .forEach(f -> this.environment.addEntry(f.toString(), f));
   }
 
   public RptdEvaluator(byte[] seed) {
-    this(SymbolTable.getPrimitiveOperations());
-    AOperator randomFunc = new RandomFunction(seed);
-    this.environment.addEntry(randomFunc.toString(), randomFunc);
+    this(new RandomFunction(seed));
   }
 
   @Override

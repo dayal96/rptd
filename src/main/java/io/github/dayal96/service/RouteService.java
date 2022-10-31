@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.RouteMatcher.Route;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -18,6 +19,10 @@ public class RouteService {
 
   public Optional<RouteEntry> getRoute(String id) {
     return routeRepository.findById(id);
+  }
+
+  public List<RouteEntry> listRoutes() {
+    return routeRepository.findAll();
   }
 
   public RouteEntry addNewRoute(String template, RequestType type) {

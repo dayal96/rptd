@@ -3,6 +3,7 @@ package io.github.dayal96.api;
 import io.github.dayal96.model.RequestType;
 import io.github.dayal96.model.RouteEntry;
 import io.github.dayal96.service.RouteService;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,11 @@ public class RptdApi {
     return routeService.getRoute(id);
   }
 
+  @GetMapping("/routes")
+  public List<RouteEntry> listRoutes() {
+    return routeService.listRoutes();
+  }
+
   @PostMapping("/route/get")
   public RouteEntry addGetRouteEntry(@RequestBody final String template) {
     return routeService.addNewRoute(template, RequestType.GET);
@@ -40,8 +46,8 @@ public class RptdApi {
     return routeService.addNewRoute(template, RequestType.PUT);
   }
 
-  @DeleteMapping("/route")
-  public void removeRouteEntry(@RequestBody final String templateId) {
+  @DeleteMapping("/route/{id}")
+  public void removeRouteEntry(@PathVariable("id") final String templateId) {
     routeService.deleteRoute(templateId);
   }
 }

@@ -8,6 +8,7 @@ import io.github.dayal96.jsonparser.JsonToBnlVisitor;
 import io.github.dayal96.primitive.string.MyString;
 import io.github.dayal96.runtime.expr.ExprSerialize;
 import io.github.dayal96.runtime.RptdEvaluator;
+import io.github.dayal96.runtime.lib.RptdStdLib;
 import io.github.dayal96.util.CryptoUtil;
 import io.github.dayal96.util.MapperUtil;
 import java.io.StringReader;
@@ -44,7 +45,7 @@ public class BnlUtil {
         .append(requestBodyBnl(s))
         .append("\n)"));
 
-    String code = pathVariables + "\n" + sourceCode;
+    String code = RptdStdLib.getStdLib() + "\n" + pathVariables + "\n" + sourceCode;
     try {
       Object result = interpreter.interpret(new StringReader(code.trim()))
           .orElse(new MyString("")).accept(ExprSerialize.getInstance());
