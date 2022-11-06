@@ -36,7 +36,7 @@ into BNL expressions for use in the response.
 ```
 POST /test
 
-(string-append "request body : " requestBody)
+(make-object (list (cons "request-body" requestBody)))
 
 ```
 
