@@ -50,6 +50,22 @@ all route entries and their ids. These ids can be used to modify Route Entries w
 `/rptd/route/{id}` with new Route Entry as body in `text/plain` format, or fetched and deleted 
 using `GET` and `DELETE` respectively at `/rptd/route/{id}`.
 
+
+### Route Priority
+
+If there are multiple matching routes for any request, the route priority is determined based on 
+number of exact matches in the Route Entry uri and the request url. Route Entry URI Parameters 
+do not count as exact matches and are given lower priority than non-parametric matches. In case 
+of ties, only one of the tied routes is selected.
+
+For instance, when matching a request for `/test/route/one`, the matching routes would be 
+prioritised in this order:
+1. `/test/route/one`
+2. `/test/route/{var}`, `/test/{var}/one`, `/{var}/route/one`
+3. `/test/{var1}/{var2}`, `/{var1}/route/{var2}`, `/{var1}/{var2}/one`
+4. `/{var1}/{var2}/{var3}`
+
+
 ### Extended BNL
 
 RPTD extends BNL for interacting with JSON objects - `make-object` and `lookup`
