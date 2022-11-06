@@ -4,12 +4,13 @@ import io.github.dayal96.model.RequestType;
 import io.github.dayal96.model.RouteEntry;
 import io.github.dayal96.model.RouteRepository;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.RouteMatcher.Route;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -25,14 +26,24 @@ public class RouteService {
     return routeRepository.findAll();
   }
 
-  public RouteEntry addNewRoute(String template, RequestType type) {
-    RouteEntry newRoute = new RouteEntry();
-    List<String> parts = List.of(template.trim().split("\n"));
+  public RouteEntry addRoute(String rawTemplate, String id) {
+    RouteEntry route = getRouteEntry(id);
+    List<String> parts = List.of(rawTemplate.trim().split("\n"));
+    RouteTemplate template = RouteTemplate.parseRouteTemplate(parts.get(0));
+    route.setType(template.type);
+    route.setTemplate(template.uri);
+    route.setScript(String.join("\n", parts.subList(1, parts.size())));
+    return routeRepository.save(route);
+  }
 
-    newRoute.setTemplate(parts.get(0));
-    newRoute.setScript(String.join("\n", parts.subList(1, parts.size())));
-    newRoute.setType(type);
-    return routeRepository.save(newRoute);
+  private RouteEntry getRouteEntry(String id) {
+    if (Objects.nonNull(id) && id.trim().length() > 0) {
+       RouteEntry toReturn = routeRepository.findById(id).orElse(new RouteEntry());
+       toReturn.setId(id);
+       return toReturn;
+    }
+
+    return new RouteEntry();
   }
 
   public void deleteRoute(String routeId) {
@@ -40,7 +51,7 @@ public class RouteService {
   }
 
   public String routeRequests(String uri, RequestType type, Optional<String> requestBody) {
-    Optional<RouteEntry> route = getMatchingRoute(uri, type);
+    Optional<RouteEntry> route = getMatchingRoute(new RouteTemplate(type, uri));
 
     if (route.isPresent()) {
       Map<String, String> urlParameters = route.get().extractParameters(uri);
@@ -50,9 +61,9 @@ public class RouteService {
     }
   }
 
-  private Optional<RouteEntry> getMatchingRoute(String url, RequestType type) {
-    List<RouteEntry> eligibleRoutes = routeRepository.findByType(type);
-    return bestMatchingRoute(eligibleRoutes, url);
+  public Optional<RouteEntry> getMatchingRoute(RouteTemplate template) {
+    List<RouteEntry> eligibleRoutes = routeRepository.findByType(template.type);
+    return bestMatchingRoute(eligibleRoutes, template.uri);
   }
 
   private static Optional<RouteEntry> bestMatchingRoute(List<RouteEntry> eligibleRoutes,
@@ -93,5 +104,22 @@ public class RouteService {
     }
 
     return match;
+  }
+
+  public static class RouteTemplate {
+    public final String uri;
+    public final RequestType type;
+
+    public RouteTemplate(RequestType type, String uri) {
+      this.type = type;
+      this.uri = uri;
+    }
+
+    public static RouteTemplate parseRouteTemplate(String route) {
+      String[] routePart = route.trim().split(" ");
+      RequestType type = RequestType.valueOf(routePart[0].toUpperCase(Locale.ROOT));
+      String uri = routePart[1];
+      return new RouteTemplate(type, uri);
+    }
   }
 }

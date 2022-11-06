@@ -1,21 +1,25 @@
 package io.github.dayal96.api;
 
-import io.github.dayal96.model.RequestType;
 import io.github.dayal96.model.RouteEntry;
 import io.github.dayal96.service.RouteService;
+import io.github.dayal96.service.RouteService.RouteTemplate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/rptd")
+@RequestMapping(value = "/rptd",
+    consumes = MediaType.TEXT_PLAIN_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
 public class RptdApi {
 
   @Autowired
@@ -31,19 +35,19 @@ public class RptdApi {
     return routeService.listRoutes();
   }
 
-  @PostMapping("/route/get")
-  public RouteEntry addGetRouteEntry(@RequestBody final String template) {
-    return routeService.addNewRoute(template, RequestType.GET);
+  @PostMapping("/match")
+  public RouteEntry findMatchingRoute(@RequestBody final String route) {
+    return routeService.getMatchingRoute(RouteTemplate.parseRouteTemplate(route)).orElse(null);
   }
 
-  @PostMapping("/route/post")
-  public RouteEntry addPostRouteEntry(@RequestBody final String template) {
-    return routeService.addNewRoute(template, RequestType.POST);
-  }
-
-  @PostMapping("/route/put")
+  @PostMapping("/route")
   public RouteEntry addPutRouteEntry(@RequestBody final String template) {
-    return routeService.addNewRoute(template, RequestType.PUT);
+    return routeService.addRoute(template, null);
+  }
+
+  @PutMapping("/route/{id}")
+  public RouteEntry updateRouteEntry(@RequestBody final String template) {
+    return routeService.addRoute(template, null);
   }
 
   @DeleteMapping("/route/{id}")
