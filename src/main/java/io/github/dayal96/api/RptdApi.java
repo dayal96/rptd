@@ -35,13 +35,18 @@ public class RptdApi {
     return routeService.listRoutes();
   }
 
+  @GetMapping(value = "/export", produces = MediaType.TEXT_PLAIN_VALUE)
+  public String exportRoutes() {
+    return routeService.exportRoutes();
+  }
+
   @PostMapping("/match")
   public RouteEntry findMatchingRoute(@RequestBody final String route) {
     return routeService.getMatchingRoute(RouteTemplate.parseRouteTemplate(route)).orElse(null);
   }
 
   @PostMapping("/route")
-  public RouteEntry addPutRouteEntry(@RequestBody final String template) {
+  public RouteEntry addRouteEntry(@RequestBody final String template) {
     return routeService.addRoute(template, null);
   }
 

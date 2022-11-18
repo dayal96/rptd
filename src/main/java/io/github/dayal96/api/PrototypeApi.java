@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import jdk.jfr.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/",
-    consumes = "application/json",
-    produces="application/json")
+    consumes = MediaType.ALL_VALUE,
+    produces = "application/json")
 public class PrototypeApi {
 
   @Autowired
@@ -29,16 +30,16 @@ public class PrototypeApi {
   }
 
   @PostMapping("/**")
-  public String routePostRequests(HttpServletRequest request, @RequestBody final String body) {
-    Optional<String> requestBody = body.strip().length() > 0 ? Optional.of(body.strip()) :
-        Optional.empty();
+  public String routePostRequests(HttpServletRequest request, @RequestBody(required = false) final String rawbody) {
+    String body = Optional.ofNullable(rawbody).orElse("").strip();
+    Optional<String> requestBody = body.length() > 0 ? Optional.of(body) : Optional.empty();
     return routeService.routeRequests(request.getRequestURI(), RequestType.POST, requestBody);
   }
 
   @PutMapping("/**")
-  public String routePutRequests(HttpServletRequest request, @RequestBody final String body) {
-    Optional<String> requestBody = body.strip().length() > 0 ? Optional.of(body.strip()) :
-        Optional.empty();
+  public String routePutRequests(HttpServletRequest request, @RequestBody(required = false) final String rawbody) {
+    String body = Optional.ofNullable(rawbody).orElse("").strip();
+    Optional<String> requestBody = body.length() > 0 ? Optional.of(body) : Optional.empty();
     return routeService.routeRequests(request.getRequestURI(), RequestType.PUT, requestBody);
   }
 }

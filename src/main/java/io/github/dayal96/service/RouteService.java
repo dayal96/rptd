@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,21 +28,29 @@ public class RouteService {
     return routeRepository.findAll();
   }
 
+  public String exportRoutes() {
+    return listRoutes().stream().map(RouteEntry::toString).collect(Collectors.joining("\n\n"));
+  }
+
   public RouteEntry addRoute(String rawTemplate, String id) {
-    RouteEntry route = getRouteEntry(id);
     List<String> parts = List.of(rawTemplate.trim().split("\n"));
     RouteTemplate template = RouteTemplate.parseRouteTemplate(parts.get(0));
+
+    RouteEntry route = getRouteEntry(id, template);
+
     route.setType(template.type);
     route.setTemplate(template.uri);
     route.setScript(String.join("\n", parts.subList(1, parts.size())));
     return routeRepository.save(route);
   }
 
-  private RouteEntry getRouteEntry(String id) {
+  private RouteEntry getRouteEntry(String id, RouteTemplate template) {
     if (Objects.nonNull(id) && id.trim().length() > 0) {
        RouteEntry toReturn = routeRepository.findById(id).orElse(new RouteEntry());
        toReturn.setId(id);
        return toReturn;
+    } else if (Objects.nonNull(template)) {
+      return routeRepository.findByTemplateAndType(template.uri, template.type).orElse(new RouteEntry());
     }
 
     return new RouteEntry();
@@ -66,8 +76,7 @@ public class RouteService {
     return bestMatchingRoute(eligibleRoutes, template.uri);
   }
 
-  private static Optional<RouteEntry> bestMatchingRoute(List<RouteEntry> eligibleRoutes,
-      String toMatch) {
+  private static Optional<RouteEntry> bestMatchingRoute(List<RouteEntry> eligibleRoutes, String toMatch) {
     eligibleRoutes.sort((route1, route2) -> matchRoute(route2, toMatch)
         - matchRoute(route1, toMatch));
     Optional<RouteEntry> bestOption = eligibleRoutes.stream().findFirst();

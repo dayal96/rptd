@@ -84,4 +84,10 @@ public class RouteEntry {
 
     return params;
   }
+
+  @Override
+  public String toString() {
+    return this.type + " " + this.template + "\n"
+        + this.script;
+  }
 }
