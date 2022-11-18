@@ -6,8 +6,11 @@ import io.github.dayal96.antlr.JsonLexer;
 import io.github.dayal96.antlr.JsonParser;
 import io.github.dayal96.expression.Expression;
 import io.github.dayal96.expression.cons.ConsPair;
+import io.github.dayal96.expression.struct.StructObject;
+import io.github.dayal96.expression.type.NilType;
+import io.github.dayal96.expression.type.StructType;
 import io.github.dayal96.jsonparser.JsonToBnlVisitor;
-import io.github.dayal96.primitive.bool.MyBoolean;
+import io.github.dayal96.primitive.Empty;
 import io.github.dayal96.primitive.number.Rational;
 import io.github.dayal96.primitive.string.MyString;
 import java.util.List;
@@ -22,8 +25,7 @@ public class JsonToBnlTest {
     CommonTokenStream tokenStream = new CommonTokenStream(lexer);
     var jsonParser = new JsonParser(tokenStream);
     var jsonToBnlVisitor = new JsonToBnlVisitor();
-    Expression toReturn = jsonToBnlVisitor.visit(jsonParser.json());
-    return toReturn;
+    return jsonToBnlVisitor.visit(jsonParser.json());
   }
 
   @Test
@@ -34,13 +36,9 @@ public class JsonToBnlTest {
         new TestCase("-123", new Rational(-123)),
         new TestCase("12.25", new Rational(1225, 100)),
         new TestCase("-0.314", new Rational(-314, 1000)),
-        new TestCase("{\"key\": \"value\"}", new ConsPair(
-            new ConsPair(new MyString("type"), new MyString("object")),
-            new ConsPair(
-                new ConsPair(new MyString("key"), new MyString("value")),
-                MyBoolean.FALSE
-            )))
-    );
+        new TestCase("{\"key\": \"value\"}",
+            new StructObject(new StructType("request-body", List.of(NilType.NIL), List.of("key")),
+                List.of(new MyString("value")))));
 
     for (int i = 0; i < testCases.size(); i++) {
       testCases.get(i).verify(i);

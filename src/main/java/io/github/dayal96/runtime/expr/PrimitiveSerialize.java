@@ -1,9 +1,11 @@
 package io.github.dayal96.runtime.expr;
 
+import io.github.dayal96.primitive.Empty;
 import io.github.dayal96.primitive.PrimitiveVisitor;
 import io.github.dayal96.primitive.bool.MyBoolean;
 import io.github.dayal96.primitive.number.MyNumber;
 import io.github.dayal96.primitive.string.MyString;
+import java.util.List;
 
 public class PrimitiveSerialize implements PrimitiveVisitor<Object> {
 
@@ -42,5 +44,10 @@ public class PrimitiveSerialize implements PrimitiveVisitor<Object> {
   @Override
   public Object visitMyString(MyString myString) {
     return myString.value;
+  }
+
+  @Override
+  public Object visitEmpty(Empty empty) {
+    return List.of();
   }
 }

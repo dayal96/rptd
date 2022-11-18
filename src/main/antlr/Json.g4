@@ -20,7 +20,7 @@ object : OBRACE members CBRACE   # nonEmptyObject
        | OBRACE CBRACE           # emptyObject
        ;
 
-members : members COMMA member   # recurMember
+members : member COMMA members   # recurMember
         | member                 # singleMember
         ;
 
@@ -30,7 +30,7 @@ array : OBRACKET CBRACKET                 # emptyArray
       | OBRACKET arrayContent CBRACKET    # nonEmptyArray
       ;
 
-arrayContent : arrayContent COMMA value   # recurArray
+arrayContent : value COMMA arrayContent   # recurArray
              | value                      # singleArray
              ;
 

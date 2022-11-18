@@ -1,6 +1,8 @@
 package io.github.dayal96.runtime.expr;
 
 import io.github.dayal96.expression.cons.ConsPair;
+import io.github.dayal96.expression.operator.IsList;
+import io.github.dayal96.expression.struct.StructObject;
 import io.github.dayal96.primitive.Primitive;
 import java.util.Collections;
 import java.util.List;
@@ -17,14 +19,18 @@ public class ExprSerialize extends PartialVisitor<Object> {
 
   @Override
   public Object visitConsPair(ConsPair consPair) {
-    if (consPair.accept(IsObject.getInstance())) {
-      return consPair.rest.accept(ObjectSerialize.getInstance());
-    } else if (consPair.accept(IsList.getInstance())) {
+    if (consPair.accept(IsList.LIST_CHECKER)) {
       List<Object> list = consPair.accept(ListSerialize.getInstance());
       Collections.reverse(list);
       return list;
+    } else {
+      return consPair.accept(ObjectSerialize.getInstance());
     }
-    return null;
+  }
+
+  @Override
+  public Object visitStruct(StructObject structObject) {
+    return structObject.accept(ObjectSerialize.getInstance());
   }
 
   @Override

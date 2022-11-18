@@ -8,6 +8,7 @@ import io.github.dayal96.expression.lambda.Lambda;
 import io.github.dayal96.expression.lambda.LambdaEnclosure;
 import io.github.dayal96.expression.local.Local;
 import io.github.dayal96.expression.operator.AOperator;
+import io.github.dayal96.expression.struct.StructObject;
 import io.github.dayal96.expression.visitor.ExpressionVisitor;
 import io.github.dayal96.primitive.Primitive;
 
@@ -17,6 +18,11 @@ public abstract class PartialVisitor<T> implements ExpressionVisitor<T> {
 
   @Override
   public T visitConsPair(ConsPair consPair) {
+    throw new RuntimeException("Operation not supported.");
+  }
+
+  @Override
+  public T visitStruct(StructObject structObject) {
     throw new RuntimeException("Operation not supported.");
   }
 

@@ -22,10 +22,19 @@ import io.github.dayal96.antlr.JsonParser.SingleMemberContext;
 import io.github.dayal96.antlr.JsonParser.TrueContext;
 import io.github.dayal96.expression.Expression;
 import io.github.dayal96.expression.cons.ConsPair;
+import io.github.dayal96.expression.local.Local;
+import io.github.dayal96.expression.local.StructDefinition;
+import io.github.dayal96.expression.struct.StructObject;
+import io.github.dayal96.expression.type.IType;
+import io.github.dayal96.expression.type.NilType;
+import io.github.dayal96.expression.type.StructType;
 import io.github.dayal96.primitive.bool.MyBoolean;
 import io.github.dayal96.primitive.number.Rational;
 import io.github.dayal96.primitive.string.MyString;
 import io.github.dayal96.runtime.expr.AppendToList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class JsonToBnlVisitor extends JsonBaseVisitor<Expression> {
 
@@ -90,34 +99,44 @@ public class JsonToBnlVisitor extends JsonBaseVisitor<Expression> {
 
   @Override
   public Expression visitNonEmptyObject(NonEmptyObjectContext ctx) {
-    return new ConsPair(
-        new ConsPair(new MyString("type"), new MyString("object")),
-        this.visit(ctx.members())
-    );
+    Map<String, Expression> members = ctx.members().accept(new JsonObjectMembersToBnlVisitor());
+
+    List<IType> types = new ArrayList<>();
+    List<String> fields = new ArrayList<>();
+    List<Expression> values = new ArrayList<>();
+
+    for (var entry : members.entrySet()) {
+      types.add(NilType.NIL);
+      fields.add(entry.getKey());
+      values.add(entry.getValue());
+    }
+
+    StructType type = new StructType("request-body", types, fields);
+    StructDefinition definition = new StructDefinition("request-body", fields);
+
+    return new Local(new ArrayList<>(List.of(definition)),
+        new StructObject(type, values));
   }
 
   @Override
   public Expression visitEmptyObject(EmptyObjectContext ctx) {
-    return new ConsPair(new ConsPair(new MyString("type"), new MyString("object")),
-        MyBoolean.FALSE);
+    StructType emptyStruct = new StructType("mt", List.of(), List.of());
+    return new StructObject(emptyStruct, List.of());
   }
 
   @Override
   public Expression visitRecurMember(RecurMemberContext ctx) {
-    return new ConsPair(this.visit(ctx.member()),
-        this.visit(ctx.members()));
+    throw new RuntimeException("Operation not supported");
   }
 
   @Override
   public Expression visitSingleMember(SingleMemberContext ctx) {
-    return new ConsPair(this.visit(ctx.member()),
-        MyBoolean.FALSE);
+    throw new RuntimeException("Operation not supported");
   }
 
   @Override
   public Expression visitMember(MemberContext ctx) {
-    return new ConsPair(new MyString(unescape(ctx.STRING().getText().replaceAll(" ", ""))),
-        this.visit(ctx.value()));
+    throw new RuntimeException("Operation not supported");
   }
 
   @Override
