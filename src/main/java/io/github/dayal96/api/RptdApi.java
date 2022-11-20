@@ -51,8 +51,8 @@ public class RptdApi {
   }
 
   @PutMapping("/route/{id}")
-  public RouteEntry updateRouteEntry(@RequestBody final String template) {
-    return routeService.addRoute(template, null);
+  public RouteEntry updateRouteEntry(@RequestBody final String template, @PathVariable("id") final String id) {
+    return routeService.addRoute(template, id);
   }
 
   @DeleteMapping("/route/{id}")
