@@ -1,5 +1,7 @@
 package io.github.dayal96.jsonparser;
 
+import static io.github.dayal96.util.StringUtil.removeQuotes;
+
 import io.github.dayal96.antlr.JsonBaseVisitor;
 import io.github.dayal96.antlr.JsonParser.DecimalContext;
 import io.github.dayal96.antlr.JsonParser.EmptyArrayContext;
@@ -101,7 +103,7 @@ public class JsonObjectMembersToBnlVisitor extends JsonBaseVisitor<Map<String, E
   @Override
   public Map<String, Expression> visitMember(MemberContext ctx) {
     HashMap<String, Expression> map = new HashMap<>();
-    map.put(unescape(ctx.STRING().getText()), ctx.value().accept(new JsonToBnlVisitor()));
+    map.put(removeQuotes(ctx.STRING().getText()), ctx.value().accept(new JsonToBnlVisitor()));
     return map;
   }
 
@@ -123,9 +125,5 @@ public class JsonObjectMembersToBnlVisitor extends JsonBaseVisitor<Map<String, E
   @Override
   public Map<String, Expression> visitRecurArray(RecurArrayContext ctx) {
     throw new RuntimeException("Operation not supported");
-  }
-
-  private static String unescape(String str) {
-    return str.substring(1,str.length() - 1).replaceAll("\"", "\"").replaceAll("\\\\", "\\");
   }
 }

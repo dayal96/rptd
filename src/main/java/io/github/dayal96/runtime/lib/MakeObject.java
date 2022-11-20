@@ -1,5 +1,7 @@
 package io.github.dayal96.runtime.lib;
 
+import static io.github.dayal96.util.StringUtil.removeQuotes;
+
 import io.github.dayal96.environment.Environment;
 import io.github.dayal96.expression.Expression;
 import io.github.dayal96.expression.cons.ConsPair;
@@ -28,7 +30,7 @@ public class MakeObject extends AOperator {
       ConsPair pair = (ConsPair) evaluated;
       pair.first.getType().join(PrimType.STRING);
 
-      fields.add(unescape(pair.first.toString()));
+      fields.add(removeQuotes(pair.first.toString()));
       types.add(NilType.NIL);
       values.add(pair.rest);
     }
@@ -39,9 +41,5 @@ public class MakeObject extends AOperator {
   @Override
   public String toString() {
     return "make-object";
-  }
-
-  private static String unescape(String str) {
-    return str.substring(1,str.length() - 1).replaceAll("\"", "\"").replaceAll("\\\\", "\\");
   }
 }

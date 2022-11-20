@@ -1,5 +1,7 @@
 package io.github.dayal96.jsonparser;
 
+import static io.github.dayal96.util.StringUtil.removeQuotes;
+
 import io.github.dayal96.antlr.JsonBaseVisitor;
 import io.github.dayal96.antlr.JsonParser.DecimalContext;
 import io.github.dayal96.antlr.JsonParser.EmptyArrayContext;
@@ -55,7 +57,7 @@ public class JsonToBnlVisitor extends JsonBaseVisitor<Expression> {
 
   @Override
   public Expression visitJsonString(JsonStringContext ctx) {
-    return new MyString(unescape(ctx.STRING().getText()));
+    return new MyString(removeQuotes(ctx.STRING().getText()));
   }
 
   @Override
@@ -157,9 +159,5 @@ public class JsonToBnlVisitor extends JsonBaseVisitor<Expression> {
   @Override
   public Expression visitRecurArray(RecurArrayContext ctx) {
     return this.visit(ctx.arrayContent()).accept(new AppendToList(this.visit(ctx.value())));
-  }
-
-  private static String unescape(String str) {
-    return str.substring(1,str.length() - 1).replaceAll("\"", "\"").replaceAll("\\\\", "\\");
   }
 }
