@@ -12,14 +12,14 @@ import java.util.random.RandomGeneratorFactory;
 
 public class RandomFunction extends AOperator {
 
-  private RandomGenerator random;
+  private final RandomGenerator random;
 
   public RandomFunction() {
     this.random = new Random();
   }
 
   public RandomFunction(byte[] seed) {
-    RandomGeneratorFactory<RandomGenerator> factory = RandomGeneratorFactory.of("SecureRandom");
+    RandomGeneratorFactory<RandomGenerator> factory = RandomGeneratorFactory.of("L128X128MixRandom");
     this.random = factory.create(seed);
   }
 
@@ -30,8 +30,8 @@ public class RandomFunction extends AOperator {
     }
     Expression evaluated = operands.get(0).evaluate(environment);
     PrimType.NUMBER.join(evaluated.getType());
-    Double num = Double.parseDouble(evaluated.toString());
-    return new Rational(this.random.nextInt(num.intValue()));
+    double num = Double.parseDouble(evaluated.toString());
+    return new Rational(this.random.nextInt((int) num));
   }
 
   @Override

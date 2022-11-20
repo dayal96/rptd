@@ -6,6 +6,8 @@ import io.github.dayal96.antlr.JsonLexer;
 import io.github.dayal96.antlr.JsonParser;
 import io.github.dayal96.expression.Expression;
 import io.github.dayal96.expression.cons.ConsPair;
+import io.github.dayal96.expression.local.Local;
+import io.github.dayal96.expression.local.StructDefinition;
 import io.github.dayal96.expression.struct.StructObject;
 import io.github.dayal96.expression.type.NilType;
 import io.github.dayal96.expression.type.StructType;
@@ -37,8 +39,9 @@ public class JsonToBnlTest {
         new TestCase("12.25", new Rational(1225, 100)),
         new TestCase("-0.314", new Rational(-314, 1000)),
         new TestCase("{\"key\": \"value\"}",
+            new Local(List.of(new StructDefinition("request-body", List.of("key"))),
             new StructObject(new StructType("request-body", List.of(NilType.NIL), List.of("key")),
-                List.of(new MyString("value")))));
+                List.of(new MyString("value"))))));
 
     for (int i = 0; i < testCases.size(); i++) {
       testCases.get(i).verify(i);
@@ -55,7 +58,7 @@ public class JsonToBnlTest {
     }
 
     public void verify(int index) {
-      assertEquals("Test Case [" + index + "] failed : ", bnl, parseJson(json));
+      assertEquals("Test Case [" + index + "] failed : ", bnl.toString(), parseJson(json).toString());
     }
   }
 }
