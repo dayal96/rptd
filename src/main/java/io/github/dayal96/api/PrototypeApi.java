@@ -2,10 +2,8 @@ package io.github.dayal96.api;
 
 import io.github.dayal96.model.RequestType;
 import io.github.dayal96.service.RouteService;
-import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-import jdk.jfr.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
